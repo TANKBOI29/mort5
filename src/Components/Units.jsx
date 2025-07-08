@@ -5,86 +5,7 @@ import '/src/index.css'
 
 function Units() {
 
-    const unitsData = [
-        {
-            name: "1st Infantry Division",
-            shortName: "1ID",
-            logo: "https://i.postimg.cc/9Qv5kkRx/Distinctive-unit-insignia-of-the-75th-Ranger-Regiment-svg-removebg-preview.png", // Placeholder, replace with actual path
-            description: "The 1st Infantry Division is a battle-hardened unit known for discipline, tradition, and excellence in ground operations. They lead from the front with a focus on teamwork, realism, and operational effectiveness.",
-            links: [
-                { type: "Roblox Group", url: "https://www.roblox.com/groups/2750883/75th-Ranger-Regiment#!/about", icon: <SiRoblox /> },
-                { type: "Discord", url: "https://upload.wikimedia.org/wikipedia/en/thumb/9/98/Discord_logo.svg/240px-Discord_logo.svg.png", icon: <FaDiscord /> },
-            ],
-            badges: [
-                { name: "Global Deployment", icon: <FaGlobe /> },
-                { name: "Rapid Response", icon: <FaClock /> },
-                { name: "Elite Unit", icon: <FaShieldAlt /> },
-            ],
-            battalions: [
-                {
-                    name: "Vanguard Brigade",
-                    description: "The elite battalion within 75th, focused on wargames and scrim/raids. They are the first to engage with enemies, deploying the best personnel 75th can offer. The battalion is organized into two specialized companies."
-                },
-                {
-                    name: "Demon Brigade",
-                    description: "The scrim/game component of 1st Ranger Battalion."
-                },
-                {
-                    name: "Raven Brigade",
-                    description: "The wargames component of 1st Ranger Battalion."
-                },
-                {
-                    name: "Army Infantry School",
-                    description: "Comprised of the best personnel 75th can offer, they are the first to engage against enemy forces."
-                }
-            ]
-        },
-        {
-            name: "82nd Airborne Division",
-            shortName: "82nd",
-            logo: "/path/to/asf-logo.png", // Placeholder, replace with actual path
-            description: "The 82nd Airborne Division is a rapid deployment force built on speed, aggression, and elite airborne tactics. As America's Guard of Honor, they specialize in airborne assaults and high-risk operations behind enemy lines.",
-            links: [
-                { type: "Roblox Group", url: "#", icon: <SiRoblox /> },
-                { type: "Discord", url: "#", icon: <FaDiscord /> },
-            ],
-            badges: [
-                { name: "Airborne Operations", icon: <FaShieldAlt /> },
-                { name: "Rapid Deployment", icon: <FaClock /> },
-            ],
-            battalions: []
-        },
-        {
-            name: "101st Airborne Division",
-            shortName: "101st",
-            logo: "/path/to/jfkwscs-logo.png", // Placeholder, replace with actual path
-            description: "Screaming Eagles of the 101st Airborne Division bring mobility and precision to the battlefield. Masters of air assault tactics, they strike fast, strike hard, and control the skies with unmatched coordination and combat skill.",
-            links: [
-                { type: "Roblox Group", url: "#", icon: <SiRoblox /> },
-                { type: "Discord", url: "#", icon: <FaDiscord /> },
-            ],
-            badges: [
-                { name: "Air Assault", icon: <FaShieldAlt /> },
-                { name: "Precision Strikes", icon: <FaClock /> },
-            ],
-            battalions: []
-        },
-        {
-            name: "1st Cavalry Division",
-            shortName: "1CAV",
-            logo: "/path/to/160th-soar-logo.png", // Placeholder, replace with actual path
-            description: "The 1st Cavalry Division combines legacy and innovation. Known for versatility, speed, and armored dominance, we operate across multiple combat environments with confidence and cavalry spirit.",
-            links: [
-                { type: "Roblox Group", url: "#", icon: <SiRoblox /> },
-                { type: "Discord", url: "#", icon: <FaDiscord /> },
-            ],
-            badges: [
-                { name: "Armored Warfare", icon: <FaShieldAlt /> },
-                { name: "Versatility", icon: <FaGlobe /> },
-            ],
-            battalions: []
-        }
-    ];
+    
 
     return (
         <div className="max-h-screen h-full w-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8 items-center justify-center">
@@ -134,25 +55,7 @@ function Units() {
                 </a>
             </div>
 
-            {/* Unit Details Section - This will be shown when a unit is selected */}
-            <div className="max-w-7xl mx-auto mt-16">
-                <div id="infantry" className="rounded-2xl max-w-300 w-280 mx-auto my-0 py-16 px-8 w-50 items-center justify-center" 
-                     style={{background: 'rgba(0,0,0,0.3)', minHeight: '60vh', display: 'none'}}>
-                    <div className="px-auto max-w-264 w-264 mx-auto rounded-lg" style={{backgroundColor: 'rgba(0, 0, 0, 0.7)', minHeight: '60vh'}}>
-                        <div className="flex items-center p-6">
-                            <img className='h-20 w-auto' src='/src/Components/Assets/img/101st-logo-main.png' alt='101st img' />
-                            <div className="ml-6">
-                                <p className='text-3xl font-extrabold text-white'>101st Airborne Division</p>
-                                <p className='text-sm text-white pl-2 font-bold'>Commanding Officer: <span className='text-gray-300'>MGen UseStarcode_Groven</span></p>
-                            </div>
-                        </div>
-                        <div className="p-6 pl-11">
-                            <p className='text-xl font-bold text-white'>About</p>
-                            <p className='text-sm text-white pt-2'>Screaming Eagles of the 101st Airborne Division bring mobility and precision to the battlefield. Masters of air assault tactics, they strike fast, strike hard, and control the skies with unmatched coordination and combat skill.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     );
 }
