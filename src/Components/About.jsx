@@ -31,15 +31,15 @@ function About() {
                     </div>
                     <div className='w-2xl max-w-2xl h-15 flex items-center justify-center mx-auto border border-blue-700 rounded-md mb-6' style={{ background: "rgba(20, 20, 20, 0.7)" }}>
                         <p className='text-center text-blue-700 text-lg mr-2 font-bold'> Command Sergeant Major </p>
-                        <p className='text-center text-white text-lg font-bold'> Command Sergeant Major, h_otpot </p>
+                        <p className='text-center text-white text-lg font-bold'> Command Sergeant Major, sinxxrr </p>
                     </div>
                     <div className='w-2xl max-w-2xl h-15 flex items-center justify-center mx-auto border border-blue-700 rounded-md mb-6' style={{ background: "rgba(20, 20, 20, 0.7)" }}>
                         <p className='text-center text-blue-700 text-lg mr-2 font-bold'> Chief of Staff </p>
-                        <p className='text-center text-white text-lg font-bold'>Major General, sinxxrr </p>
+                        <p className='text-center text-white text-lg font-bold'>Major General, Blinky5671 </p>
                     </div>
                     <div className='w-2xl max-w-2xl h-15 flex items-center justify-center mx-auto border border-blue-700 rounded-md mb-6' style={{ background: "rgba(20, 20, 20, 0.7)" }}>
                         <p className='text-center text-blue-700 text-lg mr-2 font-bold '> Deputy Chief of Staff </p>
-                        <p className='text-center text-white text-lg font-bold'>Major General, Blinky5671 </p>
+                        <p className='text-center text-white text-lg font-bold'>Major General, VACANT </p>
                     </div>
                 </div>
             </div>
