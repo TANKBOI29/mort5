@@ -1,34 +1,18 @@
-import Topbar from '../Components/Topbar'
-import Front from '../Components/Front'
-import About from "../Components/About"
-import Footer from "../Components/Footer"
-import Unit from "../Components/Units"
-import Propaganda from '../Components/Propaganda'
+import Footer from '../Components/atoms/Footer'
+import LeafletMap from '../Components/atoms/LeafletMap'
 
 function Home(){
     return (
         <>
-          <div id="topbar" className="flex h-full bg-neutral-900">
-            <Topbar />
+          <div className='min-h-screen flex flex-col'>
+            <div id="hero" className="flex flex-1 h-full bg-neutral-900 align-items justify-center">
+              <LeafletMap />
+            </div>
+            <div id="footer" className="flex h-full bg-neutral-900">
+              <Footer />
+            </div>
           </div>
-          <div id="hero" className="flex h-full bg-neutral-900">
-            <Front />
-          </div>
-          <main>
-            <section id="about" className="flex h-full bg-transparent py-20 px-8 justify-center">
-              <About />
-            </section>
-          </main>
-          <div id="units" className="flex h-full justify-center items-center bg-transparent">
-            <Unit/>
-          </div>
-          <div id="units" className="flex h-full justify-center items-center bg-transparent">
-            <Propaganda/>
-          </div>
-    
-          <footer id="footer" className='flex h-full px-0 pt-8'>
-            <Footer />
-          </footer>
+          
         </>
     )
 };

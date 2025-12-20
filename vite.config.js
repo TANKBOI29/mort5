@@ -5,16 +5,23 @@ import { ghPages } from "vite-plugin-gh-pages";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/FORSCOM/",
+  base: "/mort5/",
   plugins: [
     react(),
     tailwindcss(),
     ghPages(),
   ],
-  theme: {
-    extend: {
-      fontFamily: {
-        orbitron: ['Orbitron', 'sans-serif'],
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
+  css: {
+    theme: {
+      extend: {
+        fontFamily: {
+          orbitron: ['Orbitron', 'sans-serif'],
+        },
       },
     },
   },

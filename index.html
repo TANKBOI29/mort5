@@ -1,9 +1,11 @@
 <!doctype html><html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./src/Components/Assets/img/forscom-logo.png" />
+    <link rel="icon" type="image/svg+xml" href="./src/Components/Assets/img/logo/logo-256.png" alt="WGRV Mortar Artillery Calculator"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forces Command Website</title>
+    <title>WGRV Mortar Artillery Calculator</title>
+    <meta content="Mortar Artillery Calculator for Roblox WGRV (Primarily in use by Zanance's USAR)" name="description" data-next-head>
+    <meta content="Roblox, WGRV, Mortar, Artillery, Calculator, Artillery Calculator, Zanance's USAR, Fort Martin, Roblox USAR, FM" name="keywords" data-next-head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,6 +20,10 @@
         text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         background: #1A1A1A url('https://postimg.cc/1VZyhYmg') no-repeat center center/cover;
         background-attachment: fixed;
+        margin: 0;
+        overflow: hidden;
+        height: 100vh;
+        overscroll-behavior: none;
       }
 
       body::before {
@@ -42,6 +48,15 @@
         background-size: 100px 100px;
         z-index: -1;
         opacity: 0.05;
+    }
+    .marker {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: red;
+      border-radius: 50%;
+      opacity: 0.5;
+      transform: translate(-50%, -50%); /* center on click */
     }
     </style>
   </head>
