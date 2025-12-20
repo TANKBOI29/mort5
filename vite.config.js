@@ -11,6 +11,14 @@ export default defineConfig({
     tailwindcss(),
     ghPages(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Ensure proper MIME types for JavaScript modules
+        format: 'es',
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': '/src',
