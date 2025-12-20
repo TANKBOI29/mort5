@@ -6,7 +6,7 @@ const P = 1.2;
 export function calculateDistance(xa: number, ya: number, xb: number, yb: number) {
     const dx = xb - xa;
     const dy = yb - ya;
-    return dx * dx + dy * dy;
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 export function calculateElevation(d: number, v: number, h: number = 0,): number {
