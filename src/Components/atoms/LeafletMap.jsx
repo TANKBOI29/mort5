@@ -322,28 +322,21 @@ const LeafletMap = () => {
         const distance = Math.sqrt(squaredDistance);
 
         // Set offset based on selected mortar
-        // B2: 32.5, D3: 64, E2: 50
+        // B2: 32.5, D3: 189, E2: null
         let offset = 0;
         if (selectedMortar === 'b2') {
           offset = 32.52;
         } else if (selectedMortar === 'd3') {
           offset = 189;
         } else if (selectedMortar === 'e2') {
-          offset = 50;
+          offset = 0;
         }
         
-        // Calculate azimuth
+        // Calculations
         const azimuth = calculateAzimuth(x1, y1, x2, y2, offset);
-
-        // For elevation and time of flight, we need velocity
-        // Using a default velocity value (you may want to adjust this)
-        const velocity = 729 / 10; // Default velocity value
-        const height = 0; // Default height
-
-        // Calculate elevation
+        const velocity = 729 / 10; 
+        const height = 0; 
         const elevation = calculateElevation(distance, velocity, height);
-
-        // Calculate time of flight
         const timeOfFlight = calculateTimeOfFlight(elevation, velocity, distance);
 
         
@@ -358,10 +351,9 @@ const LeafletMap = () => {
         setResults(newResults);
 
         // Print all results
-        console.log('=== Marker Calculations ===');
+        console.log('=== Calculations ===');
         console.log('Permanent Marker Position:', { lat: x1, lng: y1 });
         console.log('Clicked Marker Position:', { lat: x2, lng: y2 });
-        console.log('Distance (squared):', squaredDistance);
         console.log('Distance:', distance);
         console.log('Azimuth:', azimuth);
         console.log('Elevation:', elevation);
@@ -436,7 +428,7 @@ const LeafletMap = () => {
                 </Marker>
               ))}
 
-              {/* Draw line from permanent marker to clicked marker */}
+              {/* draw line */}
               {lineCoordinates && (
                 <Polyline
                   positions={lineCoordinates}
@@ -449,7 +441,7 @@ const LeafletMap = () => {
             </MapContainer>
           </div>
           
-          {/* Map footer  */}
+          {/* map footer  */}
           <div className="w-full h-10 bg-neutral-900 border border-neutral-800 rounded-b-xl justify-center items-center flex relative" style={{ zIndex: 2000 }}>
             <div className="flex items-center relative" style={{ zIndex: 2001 }}>
               <span className="text-sm text-neuxsal-400 ml-2 hidden sm:inline">Mortar Location Selected:</span>
@@ -465,31 +457,31 @@ const LeafletMap = () => {
         </div>
       </div>
 
-      {/* Results */}
+      {/* results */}
       <div className="w-2/6 h-full rounded-xl mx-auto my-auto flex items-center justify-center">
         <div className="bg-neutral-900 h-119 max-h-screen w-full rounded-xl border border-neutral-800 flex flex-col-reverse justify-end items-stretch mx-5">
           <div className="w-full h-1/12 flex flex-row justify-between items-start">
             <p className="hover:text-white transition-colors w-1/3 text-left ml-10 text-xl">Distance</p>
             <span className="text-neutral-500 w-1/3 text-right mr-10 text-xl">
-              {results.distance !== null ? `${results.distance.toFixed(2)} studs` : '1754 studs'}
+              {results.distance !== null ? `${results.distance.toFixed(2)} studs` : '0 studs'}
             </span>
           </div>
           <div className="w-full h-1/12 flex flex-row justify-between items-start">
             <p className="hover:text-white transition-colors w-1/3 text-left ml-10 text-xl">Time of flight</p>
             <span className="text-neutral-500 w-1/3 text-right mr-10 text-xl">
-              {results.timeOfFlight !== null ? `${results.timeOfFlight.toFixed(2)}s` : '4.32s'}
+              {results.timeOfFlight !== null ? `${results.timeOfFlight.toFixed(2)}s` : '0s'}
             </span>
           </div>
           <div className="w-full h-1/12 flex flex-row justify-between items-start">
             <p className="hover:text-white transition-colors w-1/3 text-left ml-10 text-xl">Azimuth</p>
             <span className="text-neutral-500 w-1/3 text-right mr-10 text-xl">
-              {results.azimuth !== null ? results.azimuth.toFixed(2) : '152.56'}
+              {results.azimuth !== null ? results.azimuth.toFixed(2) : '0'}
             </span>
           </div>
           <div className="w-full h-1/12 flex flex-row justify-between items-start mt-5">
             <p className="hover:text-white transition-colors w-1/3 text-left ml-10 text-xl">Elevation</p>
             <span className="text-neutral-500 w-1/3 text-right mr-10 text-xl">
-              {results.elevation !== null ? results.elevation.toFixed(2) : '51.32'}
+              {results.elevation !== null ? results.elevation.toFixed(2) : '0'}
             </span>
           </div>
         </div>
