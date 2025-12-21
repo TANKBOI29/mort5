@@ -318,9 +318,7 @@ const LeafletMap = () => {
         const y2 = clickedMarker.position[1];
 
         // Calculate distance (returns squared distance, so take square root)
-        const squaredDistance = calculateDistance(x1, y1, x2, y2);
-        const distance = Math.sqrt(squaredDistance);
-
+        const distance = calculateDistance(x1, y1, x2, y2);
         // Set offset based on selected mortar
         // B2: 32.5, D3: 189, E2: null
         let offset = 0;
