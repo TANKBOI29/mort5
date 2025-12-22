@@ -29,6 +29,10 @@ export function calculateAzimuth(x1: number, y1: number, x2: number, y2: number,
     );
 }
 
+/**
+  * @param s Studs
+  * @returns Meters
+  */
 export function studsToMeters(s: number): number {
     return s / (5 / 1.8);
 }
