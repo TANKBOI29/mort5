@@ -104,7 +104,7 @@ const createCustomIcon = (color = 'red', markerId, hasBlastRadius = true) => {
 
 
 
-// Component to handle map events
+// component to handle map events
 function MapEvents({ onMapClick }) {
   useMapEvents({
     click: (e) => {
@@ -114,13 +114,13 @@ function MapEvents({ onMapClick }) {
   return null;
 }
 
-// Component to handle marker scaling based on zoom
+// component to handle marker scaling based on zoom
 function MarkerScaleHandler({ markers }) {
   const map = useMapEvents({});
   
   const updateScale = () => {
     const zoom = map.getZoom();
-    // Base zoom is -1, so markers scale from 0.7x at min zoom to 1.3x at max zoom
+    // base zoom is -1, so markers scale from 0.7x at min zoom to 1.3x at max zoom
     const baseZoom = -1;
     const scale = 0.7 + (zoom - baseZoom) * 0.15; // 0.7 - 1.3
     // i fucking hate this so much
@@ -145,7 +145,7 @@ function MarkerScaleHandler({ markers }) {
     });
   };
 
-  // Update scale when markers change or on zoom
+  // update scale when markers change or on zoom
   useEffect(() => {
     
     const handleZoom = () => {
@@ -157,7 +157,7 @@ function MarkerScaleHandler({ markers }) {
       updateScale();
     });
     
-    // Also update when markers change
+    // also update when markers change
     const timer = setTimeout(() => {
       updateScale();
     }, 100);
@@ -181,7 +181,7 @@ const LeafletMap = () => {
   const [selectedMortar, setSelectedMortar] = useState('b2');
 
 
-  // Permanent markers
+  // permanent markers
   const permanentMarkerB2 = {
     id: 'permanent-marker-b2',
     position: [230.25, -80.25],
@@ -205,7 +205,7 @@ const LeafletMap = () => {
     timeOfFlight: null
   });
 
-  // Variable to track current permanent marker and its position
+  // track current permanent marker and its position
   const currentPermanentMarker = useMemo(() => {
     if (selectedMortar === 'b2') {
       return {
@@ -227,27 +227,27 @@ const LeafletMap = () => {
     return null;
   }, [selectedMortar]);
 
-  // Update markers when selectedMortar changes - show permanent marker based on selection
+  // uhhh, yea
   useEffect(() => {
     setMarkers(prev => {
       const nonPermanentMarkers = prev.filter(m => !m.isPermanent);
       
       if (selectedMortar === 'b2') {
-        // Include B2 permanent marker if B2 is selected
+        // show if b2 is selected
         const hasB2Marker = prev.some(m => m.id === 'permanent-marker-b2');
         return hasB2Marker ? prev : [...nonPermanentMarkers, permanentMarkerB2];
       } else if (selectedMortar === 'd3') {
-        // Include D3 permanent marker if D3 is selected
+        // same thing for d3
         const hasD3Marker = prev.some(m => m.id === 'permanent-marker-d3');
         return hasD3Marker ? prev : [...nonPermanentMarkers, permanentMarkerD3];
       } else {
-        // Remove all permanent markers if neither B2 nor D3 is selected
+        // remove if neither
         return nonPermanentMarkers;
       }
     });
   }, [selectedMortar]);
 
-  // Inject custom style
+  // inject custom style
   useEffect(() => {
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -261,7 +261,7 @@ const LeafletMap = () => {
 
 
 
-  // Load image to get dimensions
+  // load image to get dimensions
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
@@ -285,7 +285,7 @@ const LeafletMap = () => {
       position: [latlng.lat, latlng.lng],
       color: 'red'
     };
-    // Keep permanent markers and add the new one
+    // keep permanent markers and add the new one
     setMarkers(prev => {
       const permanentMarkers = prev.filter(m => m.isPermanent);
       return [...permanentMarkers, newMarker];
@@ -293,7 +293,7 @@ const LeafletMap = () => {
     console.log('Marker added at:', latlng);
   };
 
-  // Get the line coordinates for drawing between permanent marker and clicked marker
+  // line stuff
   const lineCoordinates = useMemo(() => {
     if (currentPermanentMarker) {
       const clickedMarker = markers.find(m => !m.isPermanent);
@@ -307,7 +307,7 @@ const LeafletMap = () => {
     return null;
   }, [markers, currentPermanentMarker]);
 
-  // Calculate and print math results when both markers are present
+  // calculations, boring
   useEffect(() => {
     if (currentPermanentMarker) {
       const clickedMarker = markers.find(m => !m.isPermanent);
@@ -317,11 +317,11 @@ const LeafletMap = () => {
         const x2 = clickedMarker.position[0];
         const y2 = clickedMarker.position[1];
 
-        // Calculate distance (returns squared distance, so take square root)
+        // calculate distance (returns squareroot)
         const distance2 = calculateDistance(x1, y1, x2, y2);
         const distance = (distance2 * distance2);
-        // Set offset based on selected mortar
-        // B2: 32.5, D3: 189, E2: null
+        // set offset
+        // b2: 32.5, d3: 189, e2: null
         let offset = 0;
         if (selectedMortar === 'b2') {
           offset = 32.52;
@@ -331,7 +331,7 @@ const LeafletMap = () => {
           offset = 0;
         }
         
-        // Calculations
+        // calculations
         const azimuth = calculateAzimuth(x1, y1, x2, y2, offset);
         const velocity = 715 / 10; 
         const height = 0; 
@@ -339,7 +339,7 @@ const LeafletMap = () => {
         const timeOfFlight = calculateTimeOfFlight(elevation, velocity, distance);
 
         
-        // Store results in shared store
+        // store results in shared store
         const newResults = {
           distance: distance,
           azimuth: azimuth,
@@ -349,8 +349,8 @@ const LeafletMap = () => {
         calculationStore.setResults(newResults);
         setResults(newResults);
 
-        // Print all results
-        console.log('=== Calculations ===');
+        // print
+        console.log('==========================');
         console.log('Permanent Marker Position:', { lat: x1, lng: y1 });
         console.log('Clicked Marker Position:', { lat: x2, lng: y2 });
         console.log('Distance:', distance);
@@ -360,7 +360,7 @@ const LeafletMap = () => {
         console.log('Velocity used:', velocity);
         console.log('==========================');
       } else {
-        // Reset results when no marker
+        // reset results when no marker
         const resetResults = {
           distance: null,
           azimuth: null,
@@ -371,7 +371,7 @@ const LeafletMap = () => {
         setResults(resetResults);
       }
     } else {
-      // Reset results when no permanent marker
+      // reset results when no permanent marker
       const resetResults = {
         distance: null,
         azimuth: null,
