@@ -332,7 +332,7 @@ const LeafletMap = () => {
         
         // Calculations
         const azimuth = calculateAzimuth(x1, y1, x2, y2, offset);
-        const velocity = 725 / 10; 
+        const velocity = 735 / 10; 
         const height = 0; 
         const elevation = calculateElevation(distance, velocity, height);
         const timeOfFlight = calculateTimeOfFlight(elevation, velocity, distance);
