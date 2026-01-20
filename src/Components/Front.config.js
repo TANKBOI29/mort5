@@ -16,10 +16,10 @@ export const FRONT_CONFIG = {
   // Results configuration
   results: {
     defaultValues: {
-      distance: "1754 studs",
-      timeOfFlight: "4.32s",
-      azimuth: "152.56",
-      elevation: "51.32"
+      distance: "",
+      timeOfFlight: "",
+      azimuth: "",
+      elevation: ""
     },
     labels: {
       distance: "Distance",
@@ -52,7 +52,7 @@ export const FRONT_CONFIG = {
     }
   },
   
-  // Responsive breakpoints
+  // Breakpoints
   breakpoints: {
     sm: '640px',
     md: '768px',

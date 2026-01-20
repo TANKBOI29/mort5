@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    ghPages(),
+    // ghPages() - Using manual deployment instead
   ],
   build: {
     rollupOptions: {

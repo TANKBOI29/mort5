@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { MapContainer, Marker, Popup, Tooltip, useMapEvents, ImageOverlay, Polyline } from 'react-leaflet';
+import React, { useState, useEffect, useMemo } from 'react';
+import { MapContainer, Marker, Popup, Tooltip, useMapEvents, ImageOverlay, Polyline, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Dropdown from './Dropdown';
-import { calculateDistance, calculateAzimuth, calculateElevation, calculateTimeOfFlight } from '../../../utils/math';
+import { calculateDistance, calculateAzimuth, calculateElevation, calculateTimeOfFlight, metersToStuds, studsToMeters, calculateMaxRangeDiameter } from '../../../utils/math';
 import { calculationStore } from '../../stores/calculations';
 
 
@@ -104,7 +104,7 @@ const createCustomIcon = (color = 'red', markerId, hasBlastRadius = true) => {
 
 
 
-// Component to handle map events
+// map events
 function MapEvents({ onMapClick }) {
   useMapEvents({
     click: (e) => {
@@ -114,26 +114,25 @@ function MapEvents({ onMapClick }) {
   return null;
 }
 
-// Component to handle marker scaling based on zoom
+// handle marker scaling based on zoom
 function MarkerScaleHandler({ markers }) {
   const map = useMapEvents({});
   
   const updateScale = () => {
     const zoom = map.getZoom();
-    // Base zoom is -1, so markers scale from 0.7x at min zoom to 1.3x at max zoom
+    // base zoom is -1, markers scale from 0.7x at min zoom to 1.3x at max zoom
     const baseZoom = -1;
     const scale = 0.7 + (zoom - baseZoom) * 0.15; // 0.7 - 1.3
-    // i fucking hate this so much
-    // Apply scaling to all markers with a small delay to ensure DOM is ready
+    // apply scaling to all markers with small delay to ensure dom is ready
     requestAnimationFrame(() => {
       markers.forEach((marker) => {
         const markerElement = document.querySelector(`[data-marker-id="${marker.id}"]`);
         if (markerElement) {
-          // Apply scale
+          // apply scale
           markerElement.style.transform = `scale(${scale})`;
           markerElement.style.transformOrigin = 'center center';
           
-          // Apply inverse scale
+          // apply inverse scale
           const container = markerElement.querySelector('.marker-container');
           if (container) {
             const inverseScale = 1 / scale;
@@ -145,7 +144,7 @@ function MarkerScaleHandler({ markers }) {
     });
   };
 
-  // Update scale when markers change or on zoom
+  // update scale when markers change or on zoom
   useEffect(() => {
     
     const handleZoom = () => {
@@ -157,7 +156,7 @@ function MarkerScaleHandler({ markers }) {
       updateScale();
     });
     
-    // Also update when markers change
+    // also update when markers change
     const timer = setTimeout(() => {
       updateScale();
     }, 100);
@@ -168,7 +167,7 @@ function MarkerScaleHandler({ markers }) {
     };
   }, [markers]);
 
-  // no idea what this even does but apparently it's needed for some fucking reason
+  // no idea what this does but apparently its needed
   return null;
 }
 
@@ -178,10 +177,30 @@ const LeafletMap = () => {
     { value: 'd3', label: 'D3' },
     { value: 'e2', label: 'E2' },
   ];
+  const chargeOptions = [
+    { value: '720 / 10', label: '0' },
+    { value: '780 / 10', label: '1' },
+    { value: '840 / 10', label: '2' },
+    { value: '900 / 10', label: '3' },
+    { value: '960 / 10', label: '4' },
+  ];
   const [selectedMortar, setSelectedMortar] = useState('b2');
+  const [selectedCharge, setSelectedCharge] = useState('720 / 10');
+  
+  // parse charge string to velocity number
+  const getVelocityFromCharge = (chargeString) => {
+    // map charge strings to velocity values (divide by 10 to get m/s)
+    const chargeMap = {
+      '720 / 10': 720 / 10,
+      '780 / 10': 780 / 10,
+      '840 / 10': 840 / 10,
+      '900 / 10': 900 / 10,
+      '960 / 10': 960 / 10,
+    };
+    return chargeMap[chargeString] || 720 / 10; // default to 0 charges
+  };
 
-
-  // Permanent markers
+  // permanent markers
   const permanentMarkerB2 = {
     id: 'permanent-marker-b2',
     position: [230.25, -80.25],
@@ -195,9 +214,11 @@ const LeafletMap = () => {
     color: 'blue',
     isPermanent: true
   };
+  // fuck e2
+
 
   const [markers, setMarkers] = useState([]);
-  const [imageDimensions, setImageDimensions] = useState({ width: 1200, height: 1200 }); // Default dimensions
+  const [imageDimensions, setImageDimensions] = useState({ width: 1200, height: 1200 }); // default dimensions
   const [results, setResults] = useState({
     distance: null,
     azimuth: null,
@@ -205,7 +226,7 @@ const LeafletMap = () => {
     timeOfFlight: null
   });
 
-  // Variable to track current permanent marker and its position
+  // current mortar
   const currentPermanentMarker = useMemo(() => {
     if (selectedMortar === 'b2') {
       return {
@@ -227,27 +248,27 @@ const LeafletMap = () => {
     return null;
   }, [selectedMortar]);
 
-  // Update markers when selectedMortar changes - show permanent marker based on selection
+  // selected mortar
   useEffect(() => {
     setMarkers(prev => {
       const nonPermanentMarkers = prev.filter(m => !m.isPermanent);
       
       if (selectedMortar === 'b2') {
-        // Include B2 permanent marker if B2 is selected
+        // b2
         const hasB2Marker = prev.some(m => m.id === 'permanent-marker-b2');
         return hasB2Marker ? prev : [...nonPermanentMarkers, permanentMarkerB2];
       } else if (selectedMortar === 'd3') {
-        // Include D3 permanent marker if D3 is selected
+        // d3
         const hasD3Marker = prev.some(m => m.id === 'permanent-marker-d3');
         return hasD3Marker ? prev : [...nonPermanentMarkers, permanentMarkerD3];
       } else {
-        // Remove all permanent markers if neither B2 nor D3 is selected
+        // fuck e2
         return nonPermanentMarkers;
       }
     });
   }, [selectedMortar]);
 
-  // Inject custom style
+  // inject custom style
   useEffect(() => {
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -261,7 +282,7 @@ const LeafletMap = () => {
 
 
 
-  // Load image to get dimensions
+  // load image and get dimension
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
@@ -274,6 +295,7 @@ const LeafletMap = () => {
   const imageWidth = imageDimensions.width;
   const imageHeight = imageDimensions.height;
   const imageBounds = [[-imageHeight/2, -imageWidth/2], [imageHeight/2, imageWidth/2]];
+  const canvasScale = 0.74;
   
   const mapCenter = [0, 0];
   const mapZoom = -1;
@@ -285,15 +307,14 @@ const LeafletMap = () => {
       position: [latlng.lat, latlng.lng],
       color: 'red'
     };
-    // Keep permanent markers and add the new one
+    // keep permanent markers and add the new one
     setMarkers(prev => {
       const permanentMarkers = prev.filter(m => m.isPermanent);
       return [...permanentMarkers, newMarker];
     });
-    console.log('Marker added at:', latlng);
   };
 
-  // Get the line coordinates for drawing between permanent marker and clicked marker
+  // get line coordinates for drawing between permanent marker and clicked marker
   const lineCoordinates = useMemo(() => {
     if (currentPermanentMarker) {
       const clickedMarker = markers.find(m => !m.isPermanent);
@@ -307,7 +328,8 @@ const LeafletMap = () => {
     return null;
   }, [markers, currentPermanentMarker]);
 
-  // Calculate and print math results when both markers are present
+  
+  // calculate math results when both markers are present
   useEffect(() => {
     if (currentPermanentMarker) {
       const clickedMarker = markers.find(m => !m.isPermanent);
@@ -317,59 +339,45 @@ const LeafletMap = () => {
         const x2 = clickedMarker.position[0];
         const y2 = clickedMarker.position[1];
 
-        // Calculate distance (returns squared distance, so take square root)
-        const squaredDistance = calculateDistance(x1, y1, x2, y2);
-        const distance = Math.sqrt(squaredDistance);
+        // calculate distance
+        const distance = calculateDistance(x1, y1, x2, y2);
 
-        // Set offset based on selected mortar
-        // B2: 32.5, D3: 64, E2: 50
+        // set offset based on selected mortar
+        // b2: 32.5, d3: 189, e2: 50
         let offset = 0;
         if (selectedMortar === 'b2') {
-          offset = 32.52;
+          offset = 32.58;
         } else if (selectedMortar === 'd3') {
           offset = 189;
         } else if (selectedMortar === 'e2') {
           offset = 50;
         }
         
-        // Calculate azimuth
+        // azimuth calculation
         const azimuth = calculateAzimuth(x1, y1, x2, y2, offset);
 
-        // For elevation and time of flight, we need velocity
-        // Using a default velocity value (you may want to adjust this)
-        const velocity = 729 / 10; // Default velocity value
-        const height = 0; // Default height
-
-        // Calculate elevation
-        const elevation = calculateElevation(distance, velocity, height);
-
-        // Calculate time of flight
-        const timeOfFlight = calculateTimeOfFlight(elevation, velocity, distance);
-
+        // get velocity from selected charge
+        const selectedVelocity = getVelocityFromCharge(selectedCharge);
+        const height = 0; // normally 0
+        const gameMapSize = 2000; 
         
-        // Store results in shared store
+        // elevation calculation
+        const elevation = calculateElevation(distance, selectedVelocity, height);
+
+        // time of flight calculation
+        const timeOfFlight = calculateTimeOfFlight(elevation, selectedVelocity, distance);
+
+        // results storage
         const newResults = {
           distance: distance,
           azimuth: azimuth,
-          elevation: elevation,
-          timeOfFlight: timeOfFlight
+          elevation: isNaN(elevation) ? null : elevation,
+          timeOfFlight: isNaN(timeOfFlight) ? null : timeOfFlight
         };
         calculationStore.setResults(newResults);
         setResults(newResults);
-
-        // Print all results
-        console.log('=== Marker Calculations ===');
-        console.log('Permanent Marker Position:', { lat: x1, lng: y1 });
-        console.log('Clicked Marker Position:', { lat: x2, lng: y2 });
-        console.log('Distance (squared):', squaredDistance);
-        console.log('Distance:', distance);
-        console.log('Azimuth:', azimuth);
-        console.log('Elevation:', elevation);
-        console.log('Time of Flight:', timeOfFlight);
-        console.log('Velocity used:', velocity);
-        console.log('==========================');
       } else {
-        // Reset results when no marker
+        // reset results when no marker
         const resetResults = {
           distance: null,
           azimuth: null,
@@ -380,7 +388,7 @@ const LeafletMap = () => {
         setResults(resetResults);
       }
     } else {
-      // Reset results when no permanent marker
+      // reset results when no permanent marker
       const resetResults = {
         distance: null,
         azimuth: null,
@@ -390,7 +398,25 @@ const LeafletMap = () => {
       calculationStore.setResults(resetResults);
       setResults(resetResults);
     }
-  }, [markers, currentPermanentMarker, selectedMortar]); 
+  }, [markers, currentPermanentMarker, selectedMortar, selectedCharge, imageWidth]);
+  // calculate max range circle radius in studs
+  const maxRangeCircle = useMemo(() => {
+    if (!currentPermanentMarker) return null;
+    
+    const selectedVelocity = getVelocityFromCharge(selectedCharge);
+    const height = 0; // normally 0
+    
+    // calculate max range diameter in meters, convert to studs, then get radius
+    const maxRangeDiameterMeters = calculateMaxRangeDiameter(selectedVelocity, studsToMeters(height)) * canvasScale;
+    const maxRangeDiameterStuds = metersToStuds(maxRangeDiameterMeters);
+    const maxRadiusStuds = maxRangeDiameterStuds / 2;
+    
+    return {
+      center: [currentPermanentMarker.lat, currentPermanentMarker.lng],
+      radius: maxRadiusStuds
+    };
+  }, [currentPermanentMarker, selectedMortar, selectedCharge]);
+ 
   // self explanatory
   const removeMarker = (id) => {
     setMarkers(prev => prev.filter(marker => marker.id !== id && marker.isPermanent !== true));
@@ -436,7 +462,7 @@ const LeafletMap = () => {
                 </Marker>
               ))}
 
-              {/* Draw line from permanent marker to clicked marker */}
+              {/* draws line from permanent marker to clicked marker */}
               {lineCoordinates && (
                 <Polyline
                   positions={lineCoordinates}
@@ -446,10 +472,25 @@ const LeafletMap = () => {
                 />
               )}
 
+              {/* draws max range circle */}
+              {maxRangeCircle && (
+                <Circle
+                  center={maxRangeCircle.center}
+                  radius={maxRangeCircle.radius}
+                  pathOptions={{
+                    color: '#3b82f6',
+                    fillColor: '#3b82f6',
+                    fillOpacity: 0,
+                    weight: 2,
+                    opacity: 0.5
+                  }}
+                />
+              )}
+              
             </MapContainer>
           </div>
           
-          {/* Map footer  */}
+          {/* map footer  */}
           <div className="w-full h-10 bg-neutral-900 border border-neutral-800 rounded-b-xl justify-center items-center flex relative" style={{ zIndex: 2000 }}>
             <div className="flex items-center relative" style={{ zIndex: 2001 }}>
               <span className="text-sm text-neuxsal-400 ml-2 hidden sm:inline">Mortar Location Selected:</span>
@@ -460,12 +501,20 @@ const LeafletMap = () => {
                 placeholder="Select Mortar" 
                 className="min-w-[120px] ml-3 max-h-[30px] mx-auto"
                 zIndex={2002}/>
+              <span className="text-sm text-neuxsal-400 ml-2 hidden sm:inline">Charge:</span>
+              <Dropdown 
+                options={chargeOptions} 
+                value={selectedCharge} 
+                onChange={(option) => setSelectedCharge(option.value)}
+                placeholder="Select Charge" 
+                className="min-w-[120px] ml-3 max-h-[30px] mx-auto"
+                zIndex={2002}/>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Results */}
+      {/* results */}
       <div className="w-2/6 h-full rounded-xl mx-auto my-auto flex items-center justify-center">
         <div className="bg-neutral-900 h-119 max-h-screen w-full rounded-xl border border-neutral-800 flex flex-col-reverse justify-end items-stretch mx-5">
           <div className="w-full h-1/12 flex flex-row justify-between items-start">
@@ -477,7 +526,7 @@ const LeafletMap = () => {
           <div className="w-full h-1/12 flex flex-row justify-between items-start">
             <p className="hover:text-white transition-colors w-1/3 text-left ml-10 text-xl">Time of flight</p>
             <span className="text-neutral-500 w-1/3 text-right mr-10 text-xl">
-              {results.timeOfFlight !== null ? `${results.timeOfFlight.toFixed(2)}s` : '4.32s'}
+              {results.timeOfFlight !== null && !isNaN(results.timeOfFlight) ? `${results.timeOfFlight.toFixed(2)}s` : '4.32s'}
             </span>
           </div>
           <div className="w-full h-1/12 flex flex-row justify-between items-start">
@@ -489,7 +538,7 @@ const LeafletMap = () => {
           <div className="w-full h-1/12 flex flex-row justify-between items-start mt-5">
             <p className="hover:text-white transition-colors w-1/3 text-left ml-10 text-xl">Elevation</p>
             <span className="text-neutral-500 w-1/3 text-right mr-10 text-xl">
-              {results.elevation !== null ? results.elevation.toFixed(2) : '51.32'}
+              {results.elevation !== null && !isNaN(results.elevation) ? results.elevation.toFixed(2) : '?'}
             </span>
           </div>
         </div>
