@@ -415,7 +415,7 @@ const LeafletMap = () => {
       center: [currentPermanentMarker.lat, currentPermanentMarker.lng],
       radius: maxRadiusStuds
     };
-  }, [currentPermanentMarker, selectedMortar, selectedCharge]);
+  }, [currentPermanentMarker, selectedMortar, selectedCharge, canvasScale]);
  
   // self explanatory
   const removeMarker = (id) => {
