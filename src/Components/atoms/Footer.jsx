@@ -4,7 +4,7 @@ import Dropdown from './Dropdown';
 import '/src/index.css'
 
 function Footer() {
-  const buildId = 'v.1.04a';
+  const buildId = 'v.2.07d';
   const [selectedLanguage, setSelectedLanguage] = useState('english');
   
   const languageOptions = [
